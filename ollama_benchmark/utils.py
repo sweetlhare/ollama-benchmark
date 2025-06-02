@@ -90,7 +90,8 @@ def add_monitoring_arguments(parser):
         '--monitoring-probers', action='append'
     )
     parser.add_argument(
-        '--monitoring-output', default="/dev/stderr"
+        '--monitoring-output', default="/dev/null",
+        help="Output file for monitoring data (default: /dev/null, use /dev/stderr to see in terminal)"
     )
     return parser
 
