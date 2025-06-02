@@ -21,6 +21,16 @@ def make_parser(subparsers):
     parser.add_argument('--tokenizer-model', required=False, help="Set a hugginface tokenizer for result counters.")
 
 
+def format_value(value, max_length=100):
+    """Format value for printing, truncating large data structures."""
+    if isinstance(value, (dict, list)):
+        str_value = str(value)
+        if len(str_value) > max_length:
+            return str_value[:max_length] + "... (truncated)"
+        return str_value
+    return value
+
+
 def print_results(args, questions, results, real_duration, options, tokenizer_model):
     utils.print_main()
 
@@ -48,7 +58,12 @@ def print_results(args, questions, results, real_duration, options, tokenizer_mo
         for key, value in result.items():
             if key in skipped:
                 continue
-            print(f"{i};{result['question_id']};{key}: {value}")
+            # Skip large data structures
+            if isinstance(value, (dict, list)) and len(str(value)) > 500:
+                logger.debug(f"Skipping large {type(value).__name__} field '{key}' with size {len(str(value))}")
+                continue
+            formatted_value = format_value(value)
+            print(f"{i};{result['question_id']};{key}: {formatted_value}")
             if key in totals_keys:
                 totals[key].append(value)
 

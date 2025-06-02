@@ -139,7 +139,11 @@ def print_results(args, results, ollama_options, ollama_judge_options):
                 continue
             print(f"{key}: {value}")
     messages = [r['messages'] for r in results]
-    print(f"messages: {json.dumps(messages)}")
+    # Only print message count instead of full messages to avoid large output
+    total_messages = sum(len(msgs) for msgs in messages)
+    print(f"total_messages_count: {total_messages}")
+    if args.save_messages:
+        print(f"messages_saved_to: {args.save_messages}")
     # Scores
     judgements = [
         judgement
@@ -163,7 +167,8 @@ def print_results(args, results, ollama_options, ollama_judge_options):
         }
         for key_, value in data.items():
             print(f"{key_}: {value}")
-        print(f"{key}: {total_ratings}")
+        # Only print rating count instead of full list
+        print(f"{key}_count: {len(total_ratings)}")
     for i, judgement in enumerate(judgements):
         if 'evaluation' in judgement:
             print(f"{i};evaluation: {judgement['evaluation']}")
@@ -183,7 +188,8 @@ def print_results(args, results, ollama_options, ollama_judge_options):
         }
         for key, value in data.items():
             print(f"{key}: {value}")
-        print(f"total_self_ratings: {total_self_ratings}")
+        # Only print self rating count instead of full list
+        print(f"total_self_ratings_count: {len(total_self_ratings)}")
         for i, judgement in enumerate(self_judgements):
             if 'evaluation' in judgement:
                 print(f"{i};self_evaluation: {judgement['evaluation']}")

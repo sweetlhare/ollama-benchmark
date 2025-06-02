@@ -131,8 +131,4 @@ class Tester(BaseTester):
             'eval_rate_min': utils.min(eval_rates),
             'eval_rate_max': utils.max(eval_rates),
         }
-        if len(responses) > 1:
-            result.update({
-                'question': question,
-            })
         return result
